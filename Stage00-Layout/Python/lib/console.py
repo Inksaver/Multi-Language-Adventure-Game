@@ -74,7 +74,7 @@ def initialise() -> None:
 			is_console = False
 		is_initialised = True
 		
-def resize(width:int, height:int, clear:bool = True) -> None:
+def resize(width:int, height:int, do_clear:bool = True) -> None:
 	''' resize the console / terminal '''
 	global window_width, window_height
 	if is_console:
@@ -85,7 +85,7 @@ def resize(width:int, height:int, clear:bool = True) -> None:
 		else:    
 			cmd = f"'\\e[8;{window_height};{window_width}t'"
 			os.system("echo -e " + cmd) 
-		if clear:
+		if do_clear:
 			clear()
 			
 initialise() # runs when console class is first referenced
