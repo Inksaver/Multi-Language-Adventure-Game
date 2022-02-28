@@ -28,7 +28,7 @@ Kboard.Print($"Your favourite language is {options[choice]}");
 */
 /// </summary>
 
-namespace KBoard
+namespace Adventure_00_Layout
 {
     internal class Kboard
     {
