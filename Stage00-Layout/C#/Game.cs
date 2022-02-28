@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -42,15 +42,36 @@ namespace Adventure_00_Layout
         {
             /// Create default game items if not loading from file ///
         }
-        private static void DisplayIntro()
+        private static void DisplayIntro(List<string> introText)
         {
             /// Displays an introduction to the adventure using the supplied introText list ///
-
+            Console.Clear();
+            int size = 0; // set size of the text
+            foreach (string line in introText)  //get longest text in supplied list
+            {
+                if (line.Length > size)
+                    size = line.Length;
+            }
+            if (size % 2 == 1)
+                size += 1;
+            size += 12;
+            string boxTop = $"╔{new string('═', size)}╗";       // ══════ -> length of longest text +padding
+            string boxBottom = $"╚{new string('═', size)}╝";
+            Console.WriteLine(boxTop);                          // ╔══════════════════╗
+            foreach (string line in introText)
+                Console.WriteLine(FormatLine(line, size));      // ║       text       ║
+            Console.WriteLine(boxBottom);                       // ╚══════════════════╝
+            Kboard.Sleep(3);
+            Console.Clear();
         }
-        private static string FormatLine()
+        private static string FormatLine(string text, int length)
         {
             /// private sub-function for use in displayIntro ///
-            return "";
+            if (text.Length % 2 == 1)
+                text += " ";
+
+            string filler = new string(' ', (length - text.Length) / 2);
+            return $"║{filler}{text}{filler}║";
         }
         private static void GetFiles()
         {
@@ -63,12 +84,12 @@ namespace Adventure_00_Layout
 
         public static bool LoadGame()
         {
+            DisplayIntro(Narrator.Intro);
             return true;
         }
         public static void ModifyPlayer()
         {
 
         }
-
     }
 }
