@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Threading;
@@ -109,20 +109,24 @@ namespace Adventure_01_Player
             Console.Write($"{prompt}{ending}");
             return Console.ReadLine();
         }
-        public static int Menu(string title, List<string> textLines, int row = -1)
+        public static int Menu(string title, List<string> textLines, int row = -1, int windowWidth = 80)
         {
             /// displays a menu using the text in 'title', and a list of menu items (string)
             /// This menu will re-draw until user enters correct data
+            if (title.Length % 2 == 1) title += " ";
             int rows = -1;
-            if (row >= 0) rows = row + textLines.Count + 2;
-
-            Print($"{title}");                                      // print title
+            if (row >= 0) rows = row + textLines.Count + 4;
+            int maxLength = GetMaxLength(title, textLines, windowWidth);
+            string filler = new string(' ', (maxLength - title.Length) / 2 );
+            Print($"╔{new string('═', maxLength)}╗");
+            Print($"║{filler}{title}{filler}║");                                      // print title
+            Print($"╠{new string('═', maxLength)}╣");
             for (int i = 0; i < textLines.Count; i++)
             {
-                if (i < 9)  Print($"     {i + 1}) {textLines[i]}");  // print menu options 5 spaces
-                else        Print($"    {i + 1}) {textLines[i]}");   // print menu options 4 spaces
+                if (i < 9)  Print($"║     {i + 1}) {textLines[i].PadRight(maxLength - 8)}║");  // print menu options 5 spaces
+                else        Print($"║    {i + 1}) {textLines[i].PadRight(maxLength - 7)}║");   // print menu options 4 spaces
             }
-            Print(new string('═', Console.WindowWidth - 1));
+            Print($"╚{new string('═', maxLength)}╝");
             int userInput = GetInteger($"Type the number of your choice (1 to {textLines.Count})",  1, textLines.Count, rows);
             return userInput - 1;
         }
@@ -135,6 +139,20 @@ namespace Adventure_01_Player
         {
             if (delay < 100) delay *= 1000;
             Thread.Sleep(delay);
+        }
+        private static int GetMaxLength(string title, List<string> options, int windowWidth = 80)
+        {
+            int maxLength = title.Length;
+            foreach (string line in options)
+            {
+                maxLength = Math.Max(maxLength, line.Length + 9);
+            }
+            maxLength += 28;
+            if(maxLength > windowWidth - 2)
+                maxLength = windowWidth - 2;
+            if (maxLength % 2 == 1)
+                maxLength += 1;
+            return maxLength;
         }
         private static string ProcessInput(string prompt, double min, double max, string dataType, int row)
         {
