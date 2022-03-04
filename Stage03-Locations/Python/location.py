@@ -101,7 +101,7 @@ class Location:
 	
 		print(f"You are in {self._description}")
 		if len(exits) == 0:
-			output = "There are no exits"
+			print("There are no exits")
 		row = 1
 		
 		if len(self._items) > 0:
