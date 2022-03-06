@@ -119,17 +119,20 @@ local function CreateDefaultItems()
     AddToItems("key", "a Yale front door key: covered in rat vomit...")
   
 	if Shared.Debug then
+		local width = 112
+		Console.Resize(width, 25, true)
         print("The Dictionary shared.items contains the following objects:")
         print("key/name  object description")
-		print(string.rep("═", 80))
+		print(string.rep("═", width))
         for key, value in pairs(Shared.Items) do
 			io.write(Shared.PadRight(key, 10, " "))
 			io.write(Shared.PadRight(value.type, 8, " "))
 			io.write(value:GetDescription().."\n")
 		end
-        print(string.rep("═", 80))
+        print(string.rep("═", width))
         io.write("Enter to continue")
 		io.read()
+		Console.Resize(80, 25, true)
 	end
 end
 
