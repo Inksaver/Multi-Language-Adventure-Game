@@ -107,22 +107,23 @@ def get_boolean(prompt:str, row:int = -1) -> bool:
 		row += 1	
 	return process_input(prompt, 1, 3, "bool", row)
 
-def get_max_len(title, menu_list = None, window_width = 80):
+def get_max_len(title, menu_list = None, window_width = 0):
+	if window_width > 0:
+		return window_width - 2	
+	
 	max_len = len(title)					# calculate width of menu display
 	if menu_list != None:
 		for line in menu_list:				# get length of each menu option (inc #) ))
 			if len(line) + 9 > max_len:		# include "     1) " for each line
 				max_len = len(line) + 9		# change max_len
 
-	max_len += 28							# add packing spaces
-	if max_len > window_width - 2:			# limit width to console size or 78
-		max_len = window_width - 2
-	if max_len % 2 == 1:					# check even number length
-		max_len += 1
-		
+	max_len += round(max_len / 4)					# add packing spaces quarter the max_len
+	if max_len % 2 == 1:
+		max_len += 1	
+	
 	return max_len
 
-def menu(title:str, menu_list:list, row = -1, window_width = 80) -> int:
+def menu(title:str, menu_list:list, row = -1, window_width = 0) -> int:
 	''' public method. Displays a menu using the text in 'title', and a list of menu items (string) '''
 	if len(title) % 2 == 1:					# is title length an odd number?
 		title += " "						# add extra space to even up the length
