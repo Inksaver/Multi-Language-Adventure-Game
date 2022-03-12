@@ -1,0 +1,86 @@
+local Player = {}
+local Shared = require("shared")
+--static player class - no constructor required
+Player.Name 		= ""
+Player.Health 		= 100
+Player.Strength 	= 100
+Player.Character 	= ""
+Player.Characters 	= {'fighter','wizard','ninja','priest'}
+Player.Inventory 	= {}
+Player.ItemInHand 	= {}
+
+local function TableIndex(tbl, item)
+	for key, value in pairs(tbl) do
+		if item == value then
+			return key			-- found match
+		end
+	end
+	
+	return 0
+end
+
+function Player.AddToInventory(item)
+	if TableIndex(Player.Inventory, item) == 0 then
+		table.insert(Player.Inventory, item)
+	end
+end
+
+function Player.Attack(here, useItem)
+	local enemy = here:GetEnemy()
+	local message = "You attack the "..enemy
+	local damage = 5
+	if Shared.Items[useItem].type == "Weapon" then
+		damage = Shared.Items[useItem]:GetDamage()
+	end
+	
+	message = message .. " with "..useItem.." inflicting "..damage.." damage points"
+			
+	Shared.Enemies[enemy]:ReceiveAttack(damage)
+	
+	return message	
+end
+
+function Player.DisplayInventory()
+	--[[ display player;s inventory ]]
+	if #Player.Inventory == 0 then
+		print("Your inventory is empty")
+	else
+		print("In your inventory you have:")
+		print(table.concat(Player.Inventory, ", "))
+	end
+end
+
+function Player.GetProperty(propertyName)
+	if propertyName:find("name") ~= nil then
+		return Player.Name
+	elseif propertyName:find("health") ~= nil then
+		return Player.Health
+	elseif propertyName:find("strength") ~= nil then
+		return Player.Strength
+	elseif propertyName:find("character") ~= nil then
+		return Player.Character
+	end
+end
+
+function Player.ReceiveAttack(damage)
+	Player.Health = Player.Health - damage
+	if Player.Health <= 0  then
+		Player.Health = 0
+	end
+end
+
+function Player.RemoveFromInventory(item)
+	local index = TableIndex(Player.Inventory, item)
+	if index > 0 then
+		table.remove(Player.Inventory, index)
+	end
+end
+
+function Player.UpdateStats(characterIndex)
+	--[[ modify health and strength depending on character selected ]]
+	Player.Health = Player.Health +  characterIndex * 2
+	Player.Strength = Player.Health - characterIndex * 2
+end
+
+return Player
+
